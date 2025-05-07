@@ -37,7 +37,6 @@ def load_data():
 
 chunks, texts, tfidf_vectorizer, tfidf_matrix, bm25, embedding_model, faiss_index = load_data()
 
-st.set_page_config(page_title="Video QA", layout="wide")
 st.title("🎥 Semantic Video QA System")
 st.video("https://www.youtube.com/watch?v=dARr3lGKwk8")
 
