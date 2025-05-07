@@ -42,16 +42,15 @@ if query:
     q_emb = embedding_model.encode([query], convert_to_numpy=True).astype("float32")
     D, I = faiss_index.search(q_emb, k=5)
 
-    result_found = False
-    threshold = 0.35
+    # Show top-1 result with non-empty transcript
+    top_idx = I[0][0]
+    result = chunks[top_idx]
+    
+    if len(result['text'].strip()) > 15:
+        result_found = True
+    else:
+        result_found = False
 
-    for i in range(5):
-        idx = I[0][i]
-        score = D[0][i]
-        if score < threshold and len(chunks[idx]['text'].strip()) > 15:
-            result = chunks[idx]
-            result_found = True
-            break
 
     if result_found:
         st.subheader("🔎 Most Relevant Segment")
