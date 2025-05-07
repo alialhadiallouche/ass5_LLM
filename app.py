@@ -82,6 +82,7 @@ if st.button("Find Answer") and query:
         for r in results:
             c = r["chunk"]
             st.markdown(f"**📍 {c['start']}s – {c['end']}s**  ")
+            st.markdown(f"**Score:** {r['score']:.3f}")
             st.markdown(f"📝 *{c['text']}*")
             st.components.v1.html(f"""
                 <iframe width='100%' height='320'
