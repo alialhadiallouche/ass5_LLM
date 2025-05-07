@@ -95,7 +95,7 @@ def timestamps_overlap(a_start, a_end, b_start, b_end):
 def load_resources():
     with open("chunked_transcript.json", "r", encoding="utf-8") as f:
         chunks = json.load(f)
-    with open("updated_gold_set_test.json", "r", encoding="utf-8") as f:
+    with open("gold_set_test.json", "r", encoding="utf-8") as f:
         gold_set = json.load(f)
 
     texts = [c["text"] for c in chunks]
