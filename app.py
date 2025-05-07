@@ -1,10 +1,15 @@
 import streamlit as st
+
+# Set page config FIRST
+st.set_page_config(page_title="Video QA", layout="wide")
+
 import json
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from rank_bm25 import BM25Okapi
 from sentence_transformers import SentenceTransformer
 import faiss
+
 
 @st.cache_resource
 def load_data():
