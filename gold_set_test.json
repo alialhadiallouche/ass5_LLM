@@ -1,76 +1,71 @@
 {
   "answerable_questions": [
     {
-      "question": "What is the main topic of Professor Amir Mohad's talk?",
-      "answer": "The talk is about the GERT and Parametri's complex city of token sliding and token jumping.",
-      "timestamp": "0.0 - 13.04"
+      "question": "What is the 15 puzzle and why is it important in reconfiguration problems?",
+      "timestamp": "196.88 - 280.88",
+      "answer": "The 15 puzzle is a 4x4 grid where one square is empty and the rest are numbered 1–15. You solve it by sliding tiles into the empty space to reach a goal configuration. It illustrates state space graphs and legal moves, fundamental to understanding reconfiguration problems."
     },
     {
-      "question": "What is the 15 puzzle game, and why is it mentioned in the talk?",
-      "answer": "The 15 puzzle game is a 4x4 grid with one empty square and 15 numbered squares. It is used to introduce the concept of combinatorial reconfiguration by analyzing its state space or reconfiguration graph.",
-      "timestamp": "210.56 - 223.52"
+      "question": "What are reconfiguration graphs and how are they used in the context of the 15 puzzle?",
+      "timestamp": "295.28 - 375.44",
+      "answer": "Reconfiguration graphs represent each configuration as a vertex and connect configurations that differ by one legal move. This helps analyze transitions between puzzle states."
     },
     {
-      "question": "What are the two main rules for reconfiguring independent sets in graphs?",
-      "answer": "The two rules are token jumping (moving a token to any other vertex while maintaining independence) and token sliding (moving a token only along edges of the graph while maintaining independence).",
-      "timestamp": "788.56 - 816.96"
+      "question": "What is token sliding in the context of reconfiguration?",
+      "timestamp": "844.24 - 871.20",
+      "answer": "Token sliding allows tokens (representing nodes in an independent set) to move only to adjacent vertices while maintaining independence."
     },
     {
-      "question": "Why is token sliding generally considered harder than token jumping?",
-      "answer": "Token sliding is often harder because it imposes stricter movement constraints (only along edges), and it has been shown to remain PSPACE complete in cases where token jumping is NP complete, such as on bipartite graphs.",
-      "timestamp": "884.08 - 895.52"
+      "question": "What is token jumping and how does it differ from token sliding?",
+      "timestamp": "802.16 - 844.24",
+      "answer": "Token jumping lets tokens move to any unoccupied vertex as long as the resulting set is still independent, unlike sliding which restricts movement to neighbors."
     },
     {
-      "question": "What is the \"buffer technique\" mentioned in the talk?",
-      "answer": "The buffer technique involves using a large independent set in a part of the graph (H) to facilitate reconfiguration by temporarily moving tokens there before reaching the target set.",
-      "timestamp": "2549.36 - 2564.96"
+      "question": "Why is token sliding considered harder than token jumping?",
+      "timestamp": "884.08 - 895.52",
+      "answer": "Token sliding is often harder because it imposes stricter movement constraints and has been shown to be PSPACE-complete in cases where token jumping is only NP-complete."
     },
     {
-      "question": "What surprising result is mentioned about graph coloring reconfiguration?",
-      "answer": "While graph coloring is NP complete for K=3, the recoloring problem (reconfiguring between two 3-colorings) is polynomial time solvable. It becomes PSPACE complete only for K=4 and higher.",
-      "timestamp": "1194.48 - 1219.52"
-    },
-    {
-      "question": "What is the significance of the \"switch\" in the W-hardness proof for C4-free graphs?",
-      "answer": "The switch ensures that tokens must simultaneously be inside the clicks (independent sets) during reconfiguration, which is crucial for proving W-hardness. It prevents tokens from moving freely.",
-      "timestamp": "2217.76 - 2240.32"
-    },
-    {
-      "question": "What is the \"God's number\" in the context of reconfiguration problems?",
-      "answer": "It refers to the diameter of the reconfiguration graph, representing the worst-case shortest path length to solve the problem (e.g., the maximum number of moves needed to solve the 15 puzzle).",
-      "timestamp": "467.44 - 479.28"
+      "question": "What was the motivation for studying reconfiguration problems?",
+      "timestamp": "898.56 - 971.52",
+      "answer": "Motivations include modeling real-world incremental changes, understanding solution spaces, and applications in areas like quantum computing, complexity theory, and robotics."
     },
     {
       "question": "What open problem is mentioned regarding token jumping on bipartite graphs?",
-      "answer": "It remains open whether token jumping parameterized by the number of tokens (K) is FPT on bipartite graphs.",
-      "timestamp": "1741.36 - 1752.64"
+      "timestamp": "1741.36 - 1752.64",
+      "answer": "It remains open whether token jumping is fixed-parameter tractable (FPT) when parameterized by the number of tokens on bipartite graphs."
     },
     {
-      "question": "How does the talk describe the relationship between token sliding and token jumping on split graphs?",
-      "answer": "On split graphs and chordal graphs, token sliding is PSPACE complete, while token jumping is polynomial time solvable, showing a clear difference in complexity.",
-      "timestamp": "1398.96 - 1409.68"
+      "question": "What is the 'buffer technique' mentioned in the talk?",
+      "timestamp": "2549.36 - 2564.96",
+      "answer": "The buffer technique refers to temporarily moving tokens to a disjoint independent set (a buffer) to facilitate rearrangement before reaching the target set."
+    },
+    {
+      "question": "How do token sliding and jumping behave differently on split and chordal graphs?",
+      "timestamp": "1398.96 - 1410.88",
+      "answer": "On split and chordal graphs, token sliding is PSPACE-complete while token jumping is solvable in polynomial time, showing the differing complexities."
+    },
+    {
+      "question": "What is the difference between PSPACE and NP in the context of reconfiguration problems?",
+      "timestamp": "1076.64 - 1168.72",
+      "answer": "Many reconfiguration problems are PSPACE-complete because they may require exponential space and do not always have polynomial-size certificates, unlike typical NP problems."
     }
   ],
   "unanswerable_questions": [
     {
-      "question": "What is the exact running time of the algorithm for token jumping on C3C4-free graphs?",
-      "reason": "The talk mentions that token jumping is FPT on C3C4-free graphs but does not provide the exact running time of the algorithm."
+      "question": "What are some recent real-world applications of token sliding in robotics?"
     },
     {
-      "question": "Are there any applications of token sliding in robotics mentioned in the talk?",
-      "reason": "While the talk briefly mentions robotics as a potential application area, it does not provide specific examples or details."
+      "question": "How does the reconfiguration complexity change in dynamic graphs?"
     },
     {
-      "question": "What is the diameter of the reconfiguration graph for the 15 puzzle?",
-      "reason": "The talk discusses the concept of diameter (God's number) but does not provide the exact value for the 15 puzzle."
+      "question": "Can token jumping be implemented with neural networks in practice?"
     },
     {
-      "question": "Does the talk provide a kernelization algorithm for token sliding on planar graphs?",
-      "reason": "The talk discusses kernelization for token jumping on certain graphs but does not address planar graphs or token sliding in this context."
+      "question": "What are the hardware requirements for running token jumping algorithms efficiently?"
     },
     {
-      "question": "What is the smallest graph where token sliding is PSPACE complete?",
-      "reason": "The talk does not address the minimality of graphs for PSPACE completeness in token sliding."
+      "question": "How does this research apply to cloud computing workload management?"
     }
   ]
 }
