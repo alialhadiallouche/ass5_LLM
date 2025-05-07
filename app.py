@@ -1,8 +1,4 @@
 import streamlit as st
-
-# Set page config FIRST
-st.set_page_config(page_title="Video QA", layout="wide")
-
 import json
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -10,20 +6,19 @@ from rank_bm25 import BM25Okapi
 from sentence_transformers import SentenceTransformer
 import faiss
 
+# Set the layout and branding style
+st.set_page_config(page_title="Ask the Video", layout="centered")
 
+# Load data and initialize models
 @st.cache_resource
 def load_data():
     with open("chunked_transcript.json", "r", encoding="utf-8") as f:
         chunks = json.load(f)
 
     texts = [c["text"] for c in chunks]
-    starts = [c["start"] for c in chunks]
-    ends = [c["end"] for c in chunks]
 
-    # Normalize embeddings for cosine similarity
     model = SentenceTransformer("intfloat/e5-large-v2")
     embeddings = model.encode(texts, convert_to_numpy=True, normalize_embeddings=True).astype("float32")
-
     faiss_index = faiss.IndexFlatIP(embeddings.shape[1])
     faiss_index.add(embeddings)
 
@@ -35,27 +30,30 @@ def load_data():
 
     return chunks, texts, tfidf_vectorizer, tfidf_matrix, bm25, model, faiss_index
 
+# Load resources
 chunks, texts, tfidf_vectorizer, tfidf_matrix, bm25, embedding_model, faiss_index = load_data()
 
-st.title("🎥 Semantic Video QA System")
-st.video("https://www.youtube.com/watch?v=dARr3lGKwk8")
+# Sidebar for settings
+with st.sidebar:
+    st.header("🔧 Settings")
+    method = st.selectbox("Choose a method", ["FAISS", "TF-IDF", "BM25"])
+    top_k = st.slider("Number of Results", 1, 5, 3)
+    def_threshold = {"FAISS": 0.35, "TF-IDF": 0.05, "BM25": 3.0}
+    min_score = st.number_input("Relevance Threshold", min_value=0.0, value=def_threshold[method], step=0.01)
 
-method = st.sidebar.selectbox("Retrieval Method", ["FAISS", "TF-IDF", "BM25"])
-top_k = st.sidebar.slider("Top-k Results", 1, 5, 3)
-def_threshold = {"FAISS": 0.35, "TF-IDF": 0.05, "BM25": 3.0}
-min_score = st.sidebar.number_input("Min relevance score", min_value=0.0, value=def_threshold[method], step=0.01)
+# Main interface
+st.title("🎬 Ask Your Video")
+st.markdown("Type a natural question and we'll find matching video segments.")
+query = st.text_input("What would you like to know?")
 
-query = st.text_input("🔍 Ask a question:")
-
-if st.button("Search") and query:
+if st.button("Find Answer") and query:
     if method == "FAISS":
         q_emb = embedding_model.encode([query], convert_to_numpy=True, normalize_embeddings=True).astype("float32")
         D, I = faiss_index.search(q_emb, top_k)
-        results = []
-        for idx, score in zip(I[0], D[0]):
-            if score >= min_score:
-                c = chunks[idx]
-                results.append({"chunk": c, "score": score})
+        results = [
+            {"chunk": chunks[idx], "score": score}
+            for idx, score in zip(I[0], D[0]) if score >= min_score
+        ]
 
     elif method == "TF-IDF":
         q_vec = tfidf_vectorizer.transform([query])
@@ -73,94 +71,25 @@ if st.button("Search") and query:
             results = []
         else:
             idxs = np.argsort(scores)[::-1][:top_k]
-            results = [{"chunk": chunks[i], "score": scores[i]} for i in idxs if scores[i] >= min_score]
+            results = [
+                {"chunk": chunks[i], "score": scores[i]}
+                for i in idxs if scores[i] >= min_score
+            ]
 
-    st.write(f"**Results ({method})**")
+    # Display Results
+    st.subheader(f"🔍 Top Matches ({method})")
     if results:
         for r in results:
             c = r["chunk"]
-            st.markdown(f"**⏱ {c['start']}s – {c['end']}s**  (Score: {r['score']:.3f})")
-            st.markdown(f"> {c['text']}")
+            st.markdown(f"**📍 {c['start']}s – {c['end']}s**  ")
+            st.markdown(f"📝 *{c['text']}*")
             st.components.v1.html(f"""
-                <iframe width='700' height='400'
+                <iframe width='100%' height='320'
                     src='https://www.youtube.com/embed/dARr3lGKwk8?start={int(c['start'])}&autoplay=0'
                     frameborder='0'
                     allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
                     allowfullscreen>
                 </iframe>
-            """, height=420)
+            """, height=330)
     else:
-        st.warning("🤷‍♂️ Sorry, no relevant answer found in the video.")
-
-
-# # === app.py ===
-# import streamlit as st
-# import json
-# import numpy as np
-# from sklearn.feature_extraction.text import TfidfVectorizer
-# from rank_bm25 import BM25Okapi
-# from sentence_transformers import SentenceTransformer
-# import faiss
-
-# @st.cache_resource
-# def load_data():
-#     with open("chunked_transcript.json", "r", encoding="utf-8") as f:
-#         chunks = json.load(f)
-
-#     texts = [c["text"] for c in chunks]
-#     starts = [c["start"] for c in chunks]
-#     ends = [c["end"] for c in chunks]
-
-#     tfidf_vectorizer = TfidfVectorizer()
-#     tfidf_matrix = tfidf_vectorizer.fit_transform(texts)
-
-#     tokenized_corpus = [t.lower().split() for t in texts]
-#     bm25 = BM25Okapi(tokenized_corpus)
-
-#     model = SentenceTransformer("all-MiniLM-L6-v2")
-#     embeddings = model.encode(texts, convert_to_tensor=True).detach().cpu().numpy().astype("float32")
-#     faiss_index = faiss.IndexFlatL2(embeddings.shape[1])
-#     faiss_index.add(embeddings)
-
-#     return chunks, tfidf_vectorizer, tfidf_matrix, bm25, model, faiss_index
-
-# chunks, tfidf_vectorizer, tfidf_matrix, bm25, embedding_model, faiss_index = load_data()
-
-# st.title("🎥 Video Question Answering (RAG System)")
-# st.markdown("Enter your question to find the most relevant video segment.")
-
-# query = st.text_input("🔍 Ask a question:")
-
-# YOUTUBE_URL = "https://www.youtube.com/embed/dARr3lGKwk8"
-
-# if query:
-#     q_emb = embedding_model.encode([query], convert_to_numpy=True).astype("float32")
-#     D, I = faiss_index.search(q_emb, k=5)
-
-#     # Show top-1 result with non-empty transcript
-#     top_idx = I[0][0]
-#     result = chunks[top_idx]
-    
-#     if len(result['text'].strip()) > 15:
-#         result_found = True
-#     else:
-#         result_found = False
-
-
-#     if result_found:
-#         st.subheader("🔎 Most Relevant Segment")
-#         st.markdown(f"**Timestamp:** {result['start']}s – {result['end']}s")
-#         st.markdown(f"**Transcript:** {result['text']}")
-
-#         st.components.v1.html(f"""
-#             <iframe width="700" height="400"
-#                 src="{YOUTUBE_URL}?start={int(result['start'])}&autoplay=1&modestbranding=1&rel=0"
-#                 frameborder="0"
-#                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-#                 allowfullscreen>
-#             </iframe>
-#         """, height=420)
-#     else:
-#         st.warning("🤷‍♂️ Sorry, no relevant answer found in the video.")
-
-
+        st.error("No relevant content was found for your question. Try rephrasing it or lowering the threshold.")
